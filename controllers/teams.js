@@ -1,4 +1,3 @@
-const teams = require('../teams')
 const models = require('../models')
 
 const getAllTeams = async (request, response) => {
@@ -8,34 +7,34 @@ const getAllTeams = async (request, response) => {
 }
 
 const getTeamById = async (request, response) => {
-  const { id } = request.params
+  try {
+    const { id } = request.params
 
-  const matchingTeams = await models.teams.findOne({ where: { id } })
+    const matchingTeams = await models.teams.findOne({ where: { id } })
 
-  return matchingTeams
-    ? response.send(matchingTeams)
-    : response.sendStatus(404)
+    return matchingTeams
+      ? response.send(matchingTeams)
+      : response.sendStatus(404)
+  } catch (error) {
+    return response.status(500).send('Unable to find Team, do it agian')
+  }
 }
-
-const addTeam = (request, response) => {
+const saveNewTeam = async (request, response) => {
   const {
     location, mascot, abbreviation, conference, division
   } = request.body
 
-  const newTeam = {
-    location, mascot, abbreviation, conference, division
-  }
-
   if (!location || !mascot || !abbreviation || !conference || !division) {
-    return response.status(400).send('Empty Field, Provide all')
+    return response
+      .status(400)
+      .send('The following fields are required: location, mascot, abbreviation, conference, division')
   }
 
-
-  teams.push(newTeam)
-
+  const newTeam = await models.teams.create({
+    abbreviation, conference, division, location, mascot
+  })
 
   return response.status(201).send(newTeam)
 }
 
-
-module.exports = { getAllTeams, getTeamById, addTeam }
+module.exports = { getAllTeams, getTeamById, saveNewTeam }

@@ -23,5 +23,14 @@ const singleTeam = [{
   division: 'East'
 }]
 
-module.exports = { teamList, singleTeam }
+const postedTeam = [{
+  location: 'New England',
+  mascot: 'Patriots',
+  abbreviation: 'NE',
+  conference: 'AFC',
+  division: 'East'
+}]
+
+
+module.exports = { teamList, postedTeam, singleTeam }
 
